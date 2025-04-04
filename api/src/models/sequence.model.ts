@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
+import User from "./user.model";
 
 interface IPerformance {
   sent: number;
@@ -20,12 +21,18 @@ const performanceSchema: Schema = new Schema({
   replies: { type: Number, default: 0 },
 });
 
-const sequenceSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  status: { type: String, required: true },
-  performance: { type: performanceSchema, required: true },
-});
+const sequenceSchema: Schema = new Schema(
+  {
+    user: { type: Schema.Types.ObjectId, ref: User, required: true },
+    name: { type: String, required: true },
+    status: { type: String, required: true },
+    performance: { type: performanceSchema, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Sequence = mongoose.model<ISequence>('Sequence', sequenceSchema);
+const Sequence = mongoose.model<ISequence>("Sequence", sequenceSchema);
 
 export default Sequence;
