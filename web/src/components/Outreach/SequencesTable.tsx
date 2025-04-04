@@ -9,64 +9,62 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { Edit3, Link, MailCheck, MailIcon, MailOpen } from "lucide-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface Performance {
   sent: number;
-  open: number;
+  opened: number;
   clicks: number;
   replies: number;
 }
 
 interface Sequence {
-  id: string;
+  _id: string;
   name: string;
   status: string;
   performance: Performance;
   scheduledTime: string;
 }
 
-const sequences: Sequence[] = [
-  {
-    id: "1",
-    name: "Email Sequence 1",
-    status: "Active",
-    performance: { sent: 500, open: 400, clicks: 150, replies: 50 },
-    scheduledTime: "2025-03-15 10:00 AM",
-  },
-  {
-    id: "2",
-    name: "Email Sequence 2",
-    status: "Paused",
-    performance: { sent: 300, open: 200, clicks: 75, replies: 25 },
-    scheduledTime: "2025-03-18 11:30 AM",
-  },
-  {
-    id: "3",
-    name: "Follow-up Sequence",
-    status: "Completed",
-    performance: { sent: 700, open: 600, clicks: 250, replies: 100 },
-    scheduledTime: "2025-03-12 09:15 AM",
-  },
-  {
-    id: "4",
-    name: "Promo Sequence",
-    status: "Active",
-    performance: { sent: 600, open: 500, clicks: 200, replies: 75 },
-    scheduledTime: "2025-03-17 01:00 PM",
-  },
-  {
-    id: "5",
-    name: "Survey Sequence",
-    status: "Pending",
-    performance: { sent: 0, open: 0, clicks: 0, replies: 0 },
-    scheduledTime: "2025-03-20 02:45 PM",
-  },
-];
 
 const SequencesTable = () => {
+  const [sequences, setSequences] = useState<Sequence[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSequences = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/sequence");
+        console.log(response.data);
+        setSequences(response.data);
+      } catch (error) {
+        console.error(error);
+        setError("Failed to fetch sequences");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSequences();
+  }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>{error}</div>;
+  }
+  if (sequences.length === 0) {
+    return <div>No sequences available</div>;
+  }
   return (
     <Table>
       <TableCaption>A list of your recent email sequences.</TableCaption>
@@ -84,7 +82,7 @@ const SequencesTable = () => {
             <TableCell className="font-medium relative">
               <a
                 className="flex items-center group"
-                href={`/outreach/sequence${sequence.id}`}
+                href={`/outreach/sequence/${sequence._id}`}
               >
                 <span className="hover:text-blue-600 cursor-pointer">
                   {sequence.name}
@@ -117,7 +115,6 @@ const SequencesTable = () => {
   );
 };
 
-
 const PerformanceBar = ({ performance }: { performance: Performance }) => {
   return (
     <span className="flex items-center gap-2">
@@ -141,7 +138,7 @@ const PerformanceBar = ({ performance }: { performance: Performance }) => {
           <span>Emails Opened</span>
         </TooltipContent>
       </Tooltip>
-      <span className="w-5 text-center">{performance.open}</span>
+      <span className="w-5 text-center">{performance.opened}</span>
 
       {/* Clicks */}
       <Tooltip>
@@ -167,7 +164,5 @@ const PerformanceBar = ({ performance }: { performance: Performance }) => {
     </span>
   );
 };
-
-
 
 export default SequencesTable;

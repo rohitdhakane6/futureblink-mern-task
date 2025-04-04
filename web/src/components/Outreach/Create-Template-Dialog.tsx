@@ -15,21 +15,18 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { redirect } from "react-router-dom";
 
-const CreateSequenceDialog = () => {
+const CreateTemplateDialog = () => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const CreateSequenceSchema = z.object({
+  const CreateTemplateSchema = z.object({
     name: z.string().min(1, "Name is required"),
-    performance: z.object({
-      sent: z.number().default(0),
-      opened: z.number().default(0),
-      clicks: z.number().default(0),
-      replies: z.number().default(0),
-    }),
+    subject: z.string().min(1, "Subject is required"),
+    body: z.string().min(1, "Body is required"),
   });
 
   const {
@@ -37,37 +34,29 @@ const CreateSequenceDialog = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(CreateSequenceSchema),
+    resolver: zodResolver(CreateTemplateSchema),
     defaultValues: {
-      name: "",
-      performance: {
-        sent: 0,
-        opened: 0,
-        clicks: 0,
-        replies: 0,
-      },
+      name: "Welcome Email",
+      subject: "Welcome to Our Platform!",
+      body: "Hello {{firstName}},\n\nWelcome to our platform! We're excited to have you on board. Let us know if you need any help.\n\nBest,\nThe Team",
     },
   });
 
-  type FormData = z.infer<typeof CreateSequenceSchema>;
+  type FormData = z.infer<typeof CreateTemplateSchema>;
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     setError(null);
     setSuccess(null);
     try {
-      await axios.post("/sequence", {
+      const res=await axios.post("/email-template", {
         name: data.name,
-        performance: {
-          sent: data.performance.sent,
-          opened: data.performance.opened,
-          clicks: data.performance.clicks,
-          replies: data.performance.replies,
-        },
+        subject: data.subject,
+        body: data.body,
       });
-      setSuccess("Sequence created successfully");
+      setSuccess("Template created successfully!");
       setOpen(false);
-      window.location.reload();
+      redirect(`/outreach/templates/${res.data._id}`);
     } catch (error) {
       setError("Failed to create sequence");
       console.error(error);
@@ -80,15 +69,15 @@ const CreateSequenceDialog = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          Create New Sequence
+          Create New Template
           <PlusCircleIcon className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create a Sequence from Scratch</DialogTitle>
+          <DialogTitle>Create a Template</DialogTitle>
           <DialogDescription>
-            Create a new sequence from scratch with multiple building blocks.
+            Create a new Template for your outreach sequence.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -107,7 +96,7 @@ const CreateSequenceDialog = () => {
           {success && <div className="text-green-500">{success}</div>}
           <DialogFooter>
             <Button type="submit">
-              {isSubmitting ? "Creating..." : "Create Sequence"}
+              {isSubmitting ? "Creating..." : "Create Template"}
             </Button>
           </DialogFooter>{" "}
         </form>
@@ -116,4 +105,4 @@ const CreateSequenceDialog = () => {
   );
 };
 
-export default CreateSequenceDialog;
+export default CreateTemplateDialog;

@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 export default function NavBar() {
   const location = useLocation().pathname.split("/")[1];
-  console.log(location);
 
   const navItems: { name: string; path: string }[] = [
     { name: "Dashboard", path: "/dashboard" },
