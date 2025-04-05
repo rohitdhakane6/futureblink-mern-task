@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
 import {
   useNodesState,
   useEdgesState,
@@ -9,18 +7,20 @@ import {
   Background,
   Controls,
 } from "@xyflow/react";
-import AddLeadNode from "@/components/Flow/AddLeadNode";
 import AddNode from "@/components/Flow/Add-Node-Placeholder";
 import EmailNode from "@/components/Flow/EmailNode";
 import WaitNode from "@/components/Flow/WaitNode";
+import LeadNode from "@/components/Flow/LeadNode";
 
-const initialNodes: Node[] = [
+const defaultNodes: Node[] = [
   {
     id: "1",
-    type: "addLead",
+    type: "lead",
     selected: true,
     position: { x: 100, y: 100 },
-    data: { label: "Add Lead", selectedLead: null },
+    data: {
+      label: "Add Lead",
+    },
   },
   {
     id: "2",
@@ -29,31 +29,22 @@ const initialNodes: Node[] = [
   },
 ];
 
-const initialEdges: Edge[] = [];
+const defaultEdges: Edge[] = [];
 
 export default function SequenceFlow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedLead, setSelectedLead] = useState<{
-    _id: string;
-    listName: string;
-  } | null>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState(defaultNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(defaultEdges);
 
   const handleLeadSelect = (listId: string, listName: string) => {
-    setSelectedLead(
-      listId && listName ? { _id: listId, listName: listName } : null
-    );
+    console.log("Selected lead:", listId, listName);
     setNodes((nds) => [
       ...nds.map((node) =>
         node.id === "1"
           ? {
               ...node,
               data: {
-                ...node.data,
-                selectedLead: {
-                  _id: listId,
-                  listName: listName,
-                },
+                id: listId,
+                label: `Lead Added (${listName})`,
               },
             }
           : node
@@ -67,21 +58,20 @@ export default function SequenceFlow() {
     ]);
 
     setEdges([
-      { id: "e1-2", source: "1", target: "2" },
-      { id: "e2-3", source: "2", target: "3" , animated: true },
+      { id: "e1-2", source: "1", target: "2", animated: false },
+      { id: "e2-3", source: "2", target: "3", animated: true },
     ]);
   };
 
   const nodeTypes = {
     addnode: AddNode,
     email: EmailNode,
-    wait:WaitNode,
-    addLead: (props: any) => (
-      <AddLeadNode {...props} onLeadSelect={handleLeadSelect} />
+    wait: WaitNode,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    lead: (props: any) => (
+      <LeadNode {...props} onLeadSelect={handleLeadSelect} />
     ),
   };
-  console.log("nodes", nodes);
-  console.log("edges", edges);
 
   return (
     <div className="mt-3">

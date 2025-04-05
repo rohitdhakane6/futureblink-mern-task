@@ -4,27 +4,22 @@ import { Plus } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import axios from "axios";
 
-interface AddLeadNodeProps {
+interface LeadNodeProps {
   data: {
-    selectedLead?: {
-      _id: string;
-      listName: string;
-    };
+    id: string;
+    label: string;
   };
   isConnectable: boolean;
   onLeadSelect: (listId: string, listName: string) => void;
 }
 
-const AddLeadNode = ({
-  data,
-  isConnectable,
-  onLeadSelect,
-}: AddLeadNodeProps) => {
+const LeadNode = ({ data, isConnectable, onLeadSelect }: LeadNodeProps) => {
   const [open, setOpen] = useState(false);
   const [leadSources, setLeadSources] = useState<
     {
       _id: string;
       listName: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       leads: any[];
     }[]
   >([]);
@@ -49,11 +44,11 @@ const AddLeadNode = ({
     fetchLeadSources();
   }, []);
 
-  const handleSelectLead = (lead: string) => {
+  const handleSelectLead = (leadId: string) => {
     setOpen(false);
     onLeadSelect(
-      lead,
-      leadSources.find((item) => item._id === lead)?.listName || ""
+      leadId,
+      leadSources.find((item) => item._id === leadId)?.listName || ""
     );
   };
 
@@ -62,15 +57,13 @@ const AddLeadNode = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <div className="cursor-pointer flex flex-col items-center gap-2">
-            {data.selectedLead ? (
-              <span className="text-gray-700">
-                {data.selectedLead.listName}
-              </span>
+            {data.id ? (
+              <span className="text-gray-700">{data.label}</span>
             ) : (
               <Plus className="w-6 h-6 text-gray-500" />
             )}
             <span className="text-xs text-gray-500">
-              {data.selectedLead ? "Change Lead Source" : "Select Lead Source"}
+              {data.id ? "Change Lead Source" : "Select Lead Source"}
             </span>
           </div>
         </DialogTrigger>
@@ -107,4 +100,4 @@ const AddLeadNode = ({
   );
 };
 
-export default AddLeadNode;
+export default LeadNode;

@@ -35,7 +35,6 @@ export default function AddNodeDialog() {
   const previousNode = NodeId
     ? nodes.find((node) => node.id === (parseInt(NodeId) - 1).toString())
     : null;
-  console.log("Previous Node:", previousNode);
 
   const handleNodeSelect = useCallback(
     (type: "email" | "wait", idOrTime: string, nameOrUnit: string) => {
@@ -266,19 +265,19 @@ const ColdEmailBlock = ({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 ">
       <Select
         value={selectedTemplate?._id || ""}
         onValueChange={handleTemplateChange}
       >
-        <SelectTrigger>
+        <SelectTrigger className="w-sm">
           <SelectValue placeholder="Select Email Template">
             {selectedTemplate ? selectedTemplate.name : "Select Email Template"}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent >
           {emailTemplate.map((template) => (
-            <SelectItem key={template._id} value={template._id}>
+            <SelectItem  key={template._id} value={template._id}>
               {template.name}
             </SelectItem>
           ))}
@@ -321,7 +320,7 @@ const WaitBlock = ({
         <Label htmlFor="waittype" className="block mb-2">
           Wait Type
         </Label>
-        <Select value={waitType} onValueChange={setWaitType}>
+        <Select value={waitType} defaultValue="day" onValueChange={setWaitType}>
           <SelectTrigger id="waittype" className="w-full">
             <SelectValue placeholder="Select wait type" />
           </SelectTrigger>
