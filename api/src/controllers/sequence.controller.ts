@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import z from "zod";
 import Sequence from "../models/sequence.model";
+import { scheduleEmailSequence } from "../services/emailScheduler.service";
 
 const PerformanceSchema = z.object({
   sent: z.number().default(0),
@@ -9,10 +10,19 @@ const PerformanceSchema = z.object({
   replies: z.number().default(0),
 });
 const SequenceSchema = z.object({
-  name: z.string(),
-  status: z.string().default("draft"),
+  name: z.string().min(1, "Name is required"),
+  status: z.enum(["draft", "published"]).default("draft"),
   performance: PerformanceSchema,
+  flowChart: z.object({}).optional(),
 });
+
+const SequenceUpdateSchema = z.object({
+  name: z.string().optional(),
+  status: z.enum(["draft", "published"]).optional(),
+  performance: PerformanceSchema.optional(),
+  flowChart: z.any().optional(),
+});
+
 
 export const createSequence = async (req: Request, res: Response) => {
   try {
@@ -54,7 +64,7 @@ export const getSequenceById = async (req: Request, res: Response) => {
       _id: req.params.id,
       user: req.userId,
     })
-      .select("_id name status performance")
+      .select("_id name status performance flowChart")
       .lean();
     if (!sequence) {
       res.status(404).json({ message: "Sequence not found" });
@@ -63,5 +73,60 @@ export const getSequenceById = async (req: Request, res: Response) => {
     res.status(200).json(sequence);
   } catch (error) {
     res.status(500).json({ message: "Error fetching sequence", error });
+  }
+};
+
+export const updateSequence = async (req: Request, res: Response) => {
+  try {
+    const sequenceId = req.params.id;
+    const userId = req.userId;
+
+    if (!sequenceId) {
+      return res.status(400).json({ message: "Sequence ID is required" });
+    }
+
+    const sequence = await Sequence.findOne({
+      _id: sequenceId,
+      user: userId,
+    }).lean();
+    if (!sequence) {
+      return res.status(404).json({ message: "Sequence not found" });
+    }
+
+    const parsedData = SequenceUpdateSchema.parse(req.body);
+
+    const updatedSequence = await Sequence.findByIdAndUpdate(
+      sequenceId,
+      {
+        name: parsedData.name,
+        status: parsedData.status,
+        performance: parsedData.performance,
+        flowChart: parsedData.flowChart,
+      },
+      { new: true }
+    );
+
+    if (!updatedSequence) {
+      return res.status(404).json({ message: "Failed to update sequence" });
+    }
+
+    if (parsedData.status === "published") {
+      try {
+        await scheduleEmailSequence(updatedSequence, userId!);
+      } catch (err: any) {
+        console.error("❌ Error in scheduler service:", err.message);
+        return res.status(500).json({ message: "Failed to schedule sequence" });
+      }
+    }
+
+    return res.status(200).json({ message: "Sequence updated successfully" });
+  } catch (err: any) {
+    console.error("❌ Error:", err);
+    if (err.name === "ZodError") {
+      return res
+        .status(400)
+        .json({ message: "Invalid data", errors: err.errors });
+    }
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

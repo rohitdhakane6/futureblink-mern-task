@@ -3,7 +3,7 @@ import{
     createSequence,
     getSequenceById,
     // deleteSequence,
-    // updateSequence,
+    updateSequence,
     getSequences} from
     "../controllers/sequence.controller";
 
@@ -14,6 +14,6 @@ router.post("/", createSequence);
 router.get("/", getSequences);
 router.get("/:id", getSequenceById);
 // router.delete("/:id", deleteSequence);
-// router.put("/:id", updateSequence);
+router.put("/:id", updateSequence);
 
 export default router;

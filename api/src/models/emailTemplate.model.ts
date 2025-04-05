@@ -11,7 +11,7 @@ export interface IEmailTemplate extends Document {
 const EmailTemplateSchema: Schema = new Schema(
     {
         createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
-        name: { type: String, required: true, unique: true },
+        name: { type: String, required: true},
         subject: { type: String, required: true },
         body: { type: String, required: true },
     },

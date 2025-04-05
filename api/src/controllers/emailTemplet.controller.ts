@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import EmailTemplate from "../models/emailTemplet.model";
+import EmailTemplate from "../models/emailTemplate.model";
 import { z } from "zod";
 
 const CreateEmailTemplateSchema = z.object({
@@ -20,6 +20,7 @@ export const createEmailTemplate = async (req: Request, res: Response) => {
     await emailTemplate.save();
     res.status(201).json(emailTemplate);
   } catch (error) {
+    console.error("Error creating email template:", error);
     res.status(500).json({ message: "Error creating email template", error });
   }
 };

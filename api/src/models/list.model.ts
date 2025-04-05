@@ -31,6 +31,9 @@ const ListSchema: Schema = new Schema(
         zip: { type: String },
         country: { type: String },
       },
+      {
+        _id: false,
+      }
     ],
   },
   {
