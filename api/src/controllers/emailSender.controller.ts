@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import EmailSender from "../models/emailSender.model";
-import { z } from "zod";
 import nodemailer from "nodemailer";
 import { emailSenderSchema } from "../schema";
 
@@ -73,7 +72,7 @@ export const addEmailSender = async (req: Request, res: Response) => {
 
 /**
  * @desc Update an email sender
- * @route PUT /api/email-senders/:id
+ * @route PUT /api/v1/email-senders/:id
  */
 export const updateEmailSender = async (req: Request, res: Response) => {
   try {
@@ -102,7 +101,7 @@ export const updateEmailSender = async (req: Request, res: Response) => {
 
 /**
  * @desc Delete an email sender
- * @route DELETE /api/email-senders/:id
+ * @route DELETE /api/v1/email-senders/:id
  */
 export const deleteEmailSender = async (req: Request, res: Response) => {
   try {

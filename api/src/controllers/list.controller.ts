@@ -1,25 +1,11 @@
 import type { Request, Response } from "express";
-import z from "zod";
+import { ListCreatSchema } from "../schema";
 import List from "../models/list.model";
 
-const LeadsSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  email: z.string().email(),
-  company: z.string().optional(),
-  phone: z.string().optional().or(z.number()),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zip: z.string().optional().or(z.number()),
-  country: z.string().optional(),
-});
-
-const ListCreatSchema = z.object({
-  listName: z.string(),
-  leads: z.array(LeadsSchema),
-});
-
+/*
+ * @desc Create a new list
+ * @route POST /api/v1/lists
+ */
 export const createList = async (req: Request, res: Response) => {
   try {
     const parsedData = ListCreatSchema.parse(req.body);
@@ -35,7 +21,10 @@ export const createList = async (req: Request, res: Response) => {
   }
 };
 
-// Get all lists
+/*
+ * @desc Get all lists
+ * @route GET /api/v1/lists
+ */
 export const getLists = async (req: Request, res: Response) => {
   try {
     const lists = await List.find({
@@ -49,7 +38,10 @@ export const getLists = async (req: Request, res: Response) => {
   }
 };
 
-// Get a single list by ID
+/*
+ * @desc Get a single list by ID
+ * @route GET /api/v1/lists/:id
+ */
 export const getListById = async (req: Request, res: Response) => {
   try {
     if (!req.params.id) {
@@ -70,7 +62,10 @@ export const getListById = async (req: Request, res: Response) => {
   }
 };
 
-// Update a list by ID
+/*
+ * @desc Update a list by ID
+ * @route PUT /api/v1/lists/:id
+ */
 export const updateList = async (req: Request, res: Response) => {
   try {
     const updatedList = await List.findByIdAndUpdate(req.params.id, req.body, {
@@ -87,7 +82,10 @@ export const updateList = async (req: Request, res: Response) => {
   }
 };
 
-// Delete a list by ID
+/*
+ * @desc Delete a list by ID
+ * @route DELETE /api/v1/lists/:id
+ */
 export const deleteList = async (req: Request, res: Response) => {
   try {
     const deletedList = await List.findByIdAndDelete(req.params.id);

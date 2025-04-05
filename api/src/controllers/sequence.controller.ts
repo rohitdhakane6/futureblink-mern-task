@@ -1,28 +1,12 @@
 import type { Request, Response } from "express";
-import z from "zod";
+import { SequenceSchema, SequenceUpdateSchema } from "../schema";
 import Sequence from "../models/sequence.model";
 import { scheduleEmailSequence } from "../services/emailScheduler.service";
 
-const PerformanceSchema = z.object({
-  sent: z.number().default(0),
-  opened: z.number().default(0),
-  clicks: z.number().default(0),
-  replies: z.number().default(0),
-});
-const SequenceSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  status: z.enum(["draft", "published"]).default("draft"),
-  performance: PerformanceSchema,
-  flowChart: z.object({}).optional(),
-});
-
-const SequenceUpdateSchema = z.object({
-  name: z.string().optional(),
-  status: z.enum(["draft", "published"]).optional(),
-  performance: PerformanceSchema.optional(),
-  flowChart: z.any().optional(),
-});
-
+/**
+ * @desc Create a new sequence
+ * @route POST /api/v1/sequences
+ */
 
 export const createSequence = async (req: Request, res: Response) => {
   try {
@@ -40,7 +24,11 @@ export const createSequence = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error creating sequence", error });
   }
 };
-// Get all sequences
+
+/**
+ * @desc Get all sequences
+ * @route GET /api/v1/sequences
+ */
 export const getSequences = async (req: Request, res: Response) => {
   try {
     const sequences = await Sequence.find({
@@ -53,7 +41,12 @@ export const getSequences = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching sequences", error });
   }
 };
-// Get a single sequence by ID
+
+/**
+ * @desc Get a single sequence by ID
+ * @route GET /api/v1/sequences/:id
+ */
+
 export const getSequenceById = async (req: Request, res: Response) => {
   try {
     if (!req.params.id) {
@@ -76,6 +69,10 @@ export const getSequenceById = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @desc Delete a sequence by ID
+ * @route DELETE /api/v1/sequences/:id
+ */
 export const updateSequence = async (req: Request, res: Response) => {
   try {
     const sequenceId = req.params.id;

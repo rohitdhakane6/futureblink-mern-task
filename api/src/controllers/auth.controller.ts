@@ -2,23 +2,19 @@ import type { Request, Response } from "express";
 import z from "zod";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
+import { RegisterSchema, LoginSchema } from "../schema";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined");
 }
 
-const RegisterSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
+// TODO: add password hashing and
 
-// Todo: add password hashing and
-
+/*
+ * @desc Register a new user
+ * @route POST /api/v1/auth/register
+ */
 export const register = async (req: Request, res: Response) => {
   try {
     const parsedData = RegisterSchema.parse(req.body);
@@ -34,6 +30,11 @@ export const register = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error creating user", error });
   }
 };
+
+/**
+ * @desc Login a user
+ * @route POST /api/v1/auth/login
+ */
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -51,7 +52,7 @@ export const login = async (req: Request, res: Response) => {
       { id: user._id, email: user.email },
       process.env.JWT_SECRET || "defaultSecret"
     );
-    res.status(200).json({ "token": token });
+    res.status(200).json({ token: token });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }

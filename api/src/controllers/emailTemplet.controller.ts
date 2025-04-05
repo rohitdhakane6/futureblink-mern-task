@@ -1,16 +1,15 @@
 import type { Request, Response } from "express";
 import EmailTemplate from "../models/emailTemplate.model";
-import { z } from "zod";
+import { EmailTemplateSchema } from "../schema";
 
-const CreateEmailTemplateSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  subject: z.string().min(1, "Subject is required"),
-  body: z.string().min(1, "Body is required"),
-});
+/**
+ * @desc Create a new email template
+ * @route POST /api/v1/email-templates
+ */
 
 export const createEmailTemplate = async (req: Request, res: Response) => {
   try {
-    const { name, subject, body } = CreateEmailTemplateSchema.parse(req.body);
+    const { name, subject, body } = EmailTemplateSchema.parse(req.body);
     const emailTemplate = new EmailTemplate({
       name,
       subject,
@@ -25,17 +24,25 @@ export const createEmailTemplate = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @desc Get all email templates
+ * @route GET /api/v1/email-templates
+ */
 export const getEmailTemplates = async (req: Request, res: Response) => {
   try {
     const emailTemplates = await EmailTemplate.find({
       createdBy: req.userId,
-    })
+    });
     res.status(200).json(emailTemplates);
   } catch (error) {
     res.status(500).json({ message: "Error fetching email templates", error });
   }
 };
 
+/**
+ * @desc Get a single email template by ID
+ * @route GET /api/v1/email-templates/:id
+ */
 export const getEmailTemplateById = async (req: Request, res: Response) => {
   if (!req.params.id) {
     res.status(400).json({ message: "Email template ID is required" });
@@ -56,13 +63,17 @@ export const getEmailTemplateById = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @desc Delete an email template
+ * @route DELETE /api/v1/email-templates/:id
+ */
 export const updateEmailTemplate = async (req: Request, res: Response) => {
   if (!req.params.id) {
     res.status(400).json({ message: "Email template ID is required" });
     return;
   }
   try {
-    const { name, subject, body } = CreateEmailTemplateSchema.parse(req.body);
+    const { name, subject, body } = EmailTemplateSchema.parse(req.body);
     const emailTemplate = await EmailTemplate.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.userId },
       { name, subject, body },
@@ -76,4 +87,4 @@ export const updateEmailTemplate = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: "Error updating email template", error });
   }
-}
+};
