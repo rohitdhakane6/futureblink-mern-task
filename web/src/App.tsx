@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -10,7 +15,7 @@ import Register from "@/pages/Register";
 
 function AppContent() {
   const location = useLocation();
-  const hideNavbarOnRoutes = ["/"]; // You can add more paths here if needed
+  const hideNavbarOnRoutes = ["/", "/login", "/register"];
   const shouldHideNavbar = hideNavbarOnRoutes.includes(location.pathname);
 
   return (

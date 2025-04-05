@@ -1,92 +1,125 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Mail, Workflow, Zap, Users, IterationCw as Integration, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Mail,
+  Workflow,
+  Zap,
+  Users,
+  IterationCw as Integration,
+  Lock,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from "@/components/ui/accordion";
+import { useNavigate } from "react-router-dom";
 
 const features = [
   {
     icon: <Workflow className="h-8 w-8" />,
-    title: 'Visual Flow Builder',
-    description: 'Drag-and-drop interface for creating sophisticated email sequences',
+    title: "Visual Flow Builder",
+    description:
+      "Drag-and-drop interface for creating sophisticated email sequences",
   },
   {
     icon: <Zap className="h-8 w-8" />,
-    title: 'Smart Automation',
-    description: 'Trigger-based workflows that respond to subscriber behavior',
+    title: "Smart Automation",
+    description: "Trigger-based workflows that respond to subscriber behavior",
   },
   {
     icon: <Users className="h-8 w-8" />,
-    title: 'Audience Segmentation',
-    description: 'Target specific groups with personalized messaging',
+    title: "Audience Segmentation",
+    description: "Target specific groups with personalized messaging",
   },
   {
     icon: <Integration className="h-8 w-8" />,
-    title: 'Easy Integration',
-    description: 'Connect with your favorite tools and platforms seamlessly',
+    title: "Easy Integration",
+    description: "Connect with your favorite tools and platforms seamlessly",
   },
 ];
 
 const pricingTiers = [
   {
-    name: 'Starter',
-    price: '$29',
-    description: 'Perfect for small businesses',
-    features: ['Up to 5,000 subscribers', '3 automation workflows', 'Basic analytics', 'Email support'],
+    name: "Starter",
+    price: "$29",
+    description: "Perfect for small businesses",
+    features: [
+      "Up to 5,000 subscribers",
+      "3 automation workflows",
+      "Basic analytics",
+      "Email support",
+    ],
   },
   {
-    name: 'Professional',
-    price: '$79',
-    description: 'For growing teams',
-    features: ['Up to 25,000 subscribers', 'Unlimited workflows', 'Advanced analytics', 'Priority support'],
+    name: "Professional",
+    price: "$79",
+    description: "For growing teams",
+    features: [
+      "Up to 25,000 subscribers",
+      "Unlimited workflows",
+      "Advanced analytics",
+      "Priority support",
+    ],
   },
   {
-    name: 'Enterprise',
-    price: 'Custom',
-    description: 'For large organizations',
-    features: ['Unlimited subscribers', 'Custom workflows', 'Dedicated manager', '24/7 support'],
+    name: "Enterprise",
+    price: "Custom",
+    description: "For large organizations",
+    features: [
+      "Unlimited subscribers",
+      "Custom workflows",
+      "Dedicated manager",
+      "24/7 support",
+    ],
   },
 ];
 
 const testimonials = [
   {
-    name: 'Sarah Johnson',
-    role: 'Marketing Director',
-    company: 'TechStart Inc.',
-    content: 'This tool has transformed how we handle our email campaigns. The visual builder is intuitive and powerful.',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150',
+    name: "Sarah Johnson",
+    role: "Marketing Director",
+    company: "TechStart Inc.",
+    content:
+      "This tool has transformed how we handle our email campaigns. The visual builder is intuitive and powerful.",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150",
   },
   {
-    name: 'Michael Chen',
-    role: 'E-commerce Owner',
-    company: 'StyleBox',
-    content: 'The automation features have helped us increase our email engagement by 150%. Absolutely worth every penny.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150',
+    name: "Michael Chen",
+    role: "E-commerce Owner",
+    company: "StyleBox",
+    content:
+      "The automation features have helped us increase our email engagement by 150%. Absolutely worth every penny.",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150",
   },
 ];
 
 const faqs = [
   {
-    question: 'How easy is it to get started?',
-    answer: 'Getting started is simple. Sign up for an account, choose your plan, and you can begin creating your first email flow within minutes using our intuitive visual builder.',
+    question: "How easy is it to get started?",
+    answer:
+      "Getting started is simple. Sign up for an account, choose your plan, and you can begin creating your first email flow within minutes using our intuitive visual builder.",
   },
   {
-    question: 'Can I import my existing email list?',
-    answer: 'Yes! We support importing subscriber lists from most major email marketing platforms and CSV files.',
+    question: "Can I import my existing email list?",
+    answer:
+      "Yes! We support importing subscriber lists from most major email marketing platforms and CSV files.",
   },
   {
-    question: 'What kind of support do you offer?',
-    answer: 'We offer email support for all plans, with priority support and dedicated account managers for higher tiers.',
+    question: "What kind of support do you offer?",
+    answer:
+      "We offer email support for all plans, with priority support and dedicated account managers for higher tiers.",
   },
 ];
 
 function App() {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -94,8 +127,8 @@ function App() {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -105,7 +138,7 @@ function App() {
       const sectionTop = section.offsetTop - navHeight;
       window.scrollTo({
         top: sectionTop,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     }
   };
@@ -113,20 +146,41 @@ function App() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60' : 'bg-transparent'
-      }`}>
+      <nav
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+            : "bg-transparent"
+        }`}
+      >
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Mail className="h-6 w-6" />
             <span className="font-bold text-xl">FlowMail</span>
           </div>
           <div className="hidden md:flex items-center space-x-6">
-            <Button variant="ghost" onClick={() => scrollToSection('features')}>Features</Button>
-            <Button variant="ghost" onClick={() => scrollToSection('pricing')}>Pricing</Button>
-            <Button variant="ghost" onClick={() => scrollToSection('testimonials')}>Testimonials</Button>
-            <Button variant="ghost" onClick={() => scrollToSection('faq')}>FAQ</Button>
-            <Button onClick={() => scrollToSection('pricing')}>Get Started</Button>
+            <Button variant="ghost" onClick={() => scrollToSection("features")}>
+              Features
+            </Button>
+            <Button variant="ghost" onClick={() => scrollToSection("pricing")}>
+              Pricing
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => scrollToSection("testimonials")}
+            >
+              Testimonials
+            </Button>
+            <Button variant="ghost" onClick={() => scrollToSection("faq")}>
+              FAQ
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Get Started
+            </Button>
           </div>
         </div>
       </nav>
@@ -148,7 +202,11 @@ function App() {
               Automate your email marketing and boost engagement effortlessly.
             </p>
             <div className="flex justify-center gap-4">
-              <Button size="lg" className="gap-2" onClick={() => scrollToSection('pricing')}>
+              <Button
+                size="lg"
+                className="gap-2"
+                onClick={() => scrollToSection("pricing")}
+              >
                 Start Free Trial <ArrowRight className="h-4 w-4" />
               </Button>
               <Button size="lg" variant="outline">
@@ -156,7 +214,7 @@ function App() {
               </Button>
             </div>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -175,7 +233,9 @@ function App() {
       {/* Features Section */}
       <section id="features" className="py-20 bg-muted/50">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Powerful Features</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Powerful Features
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="border-none">
@@ -195,7 +255,9 @@ function App() {
       {/* Pricing Section */}
       <section id="pricing" className="py-20">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Simple, Transparent Pricing</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Simple, Transparent Pricing
+          </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {pricingTiers.map((tier, index) => (
               <Card key={index} className="relative">
@@ -203,14 +265,21 @@ function App() {
                   <CardTitle>{tier.name}</CardTitle>
                   <div className="mt-4">
                     <span className="text-4xl font-bold">{tier.price}</span>
-                    {tier.price !== 'Custom' && <span className="text-muted-foreground">/month</span>}
+                    {tier.price !== "Custom" && (
+                      <span className="text-muted-foreground">/month</span>
+                    )}
                   </div>
-                  <p className="text-muted-foreground mt-2">{tier.description}</p>
+                  <p className="text-muted-foreground mt-2">
+                    {tier.description}
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
                     {tier.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-2">
+                      <li
+                        key={featureIndex}
+                        className="flex items-center gap-2"
+                      >
                         <Lock className="h-4 w-4 text-primary" />
                         {feature}
                       </li>
@@ -227,7 +296,9 @@ function App() {
       {/* Testimonials Section */}
       <section id="testimonials" className="py-20 bg-muted/50">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">What Our Customers Say</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            What Our Customers Say
+          </h2>
           <div className="grid md:grid-cols-2 gap-8">
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="border-none">
@@ -256,7 +327,9 @@ function App() {
       {/* FAQ Section */}
       <section id="faq" className="py-20">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Frequently Asked Questions
+          </h2>
           <div className="max-w-3xl mx-auto">
             <Accordion type="single" collapsible>
               {faqs.map((faq, index) => (

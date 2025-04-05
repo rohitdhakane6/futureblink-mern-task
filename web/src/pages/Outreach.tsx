@@ -1,5 +1,5 @@
 import NavBar from "@/components/Outreach/Outreach-Navbar";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Sequences from "@/components/Outreach/SequenceList";
 import Sequence from "@/components/Outreach/Sequence";
 import Outbox from "@/components/Outreach/Outbox";
@@ -16,6 +16,7 @@ export default function Outreach() {
       <div className="flex-grow">
         <ReactFlowProvider>
           <Routes>
+            <Route path="/" element={<Navigate to="sequence" replace />} />
             <Route path="sequence" element={<Sequences />} />
             <Route path="sequence/:id" element={<Sequence />} />
             <Route path="outbox" element={<Outbox />} />

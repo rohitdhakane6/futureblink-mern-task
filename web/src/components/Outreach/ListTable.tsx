@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Edit3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -8,79 +13,60 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import axios from "axios";
 
-import { Edit3 } from "lucide-react";
-import { useEffect, useState } from "react";
-
-const ListTable = () => {
+export default function ListTable() {
   const [lists, setLists] = useState<
     {
       _id: string;
       listName: string;
-      leads: any;
+      leads: any[];
     }[]
   >([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/list");
-        const data = response.data;
-        setLists(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+    axios
+      .get("/list")
+      .then((res) => setLists(res.data))
+      .catch((err) => console.error("Error fetching lists", err));
   }, []);
 
-  if (!lists) {
-    return <div>Loading...</div>;
-  }
-
-  if (lists.length === 0) {
-    return (
-      <div className="text-center py-4">
-        <p className="text-gray-500">No sequences found.</p>
-      </div>
-    );
-  }
-
   return (
-    <Table>
-      <TableCaption>Your recent email sequences.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="px-4 py-2 text-left">Name</TableHead>
-          <TableHead className="px-4 py-2 text-left">Contacts</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {lists.map((list) => (
-          <TableRow key={list._id} className="hover:bg-muted hover:bg-opacity-10">
-            <TableCell className="font-medium relative px-4 py-2">
-              <a
-                className="flex items-center group space-x-2"
-                href={`/outreach/list/${list._id}`}
-              >
-                <span className="text-muted-foreground hover:text-primary">
-                  {list.listName}
-                </span>
-                <Edit3 className="ml-2 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-100" />
-              </a>
-            </TableCell>
-
-            {/* Leads Column */}
-            <TableCell className="px-4 py-2">
-              <Badge className="rounded-md px-3 py-1">{list.leads.length}</Badge>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+      <div className="border rounded-lg p-4">
+        {lists.length > 0 ? (
+          <Table>
+            <TableCaption>Your recent email lists.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Contacts</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lists.map((list) => (
+                <TableRow key={list._id} className="hover:bg-muted/50">
+                  <TableCell>
+                    <a
+                      href={`/outreach/list/${list._id}`}
+                      className="flex items-center group space-x-2"
+                    >
+                      <span className="hover:text-primary transition">
+                        {list.listName}
+                      </span>
+                      <Edit3 className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className="rounded-md px-3 py-1">
+                      {list.leads.length}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <p className="text-muted-foreground">No email lists found.</p>
+        )}
+      </div>
   );
-};
-
-export default ListTable;
+}

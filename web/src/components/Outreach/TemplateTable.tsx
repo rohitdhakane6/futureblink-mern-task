@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Edit3 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,79 +14,63 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Edit3 } from "lucide-react";
-
-interface Teamplate {
+interface Template {
   _id: string;
   name: string;
   subject: string;
   body: string;
 }
 
-const TeamplateTable = () => {
-  const [Teamplate, setTeamplate] = useState<Teamplate[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function TemplateTable() {
+  const [templates, setTemplates] = useState<Template[]>([]);
 
   useEffect(() => {
-    const fetchTeamplate = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("/email-template");
-        console.log(response.data);
-        setTeamplate(response.data);
-      } catch (error) {
-        console.error(error);
-        setError("Failed to fetch Teamplate");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTeamplate();
+    axios
+      .get("/email-template")
+      .then((res) => setTemplates(res.data))
+      .catch((err) => console.error("Error fetching templates", err));
   }, []);
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>{error}</div>;
-  }
-  if (Teamplate.length === 0) {
-    return <div>No Teamplate available</div>;
-  }
-  return (
-    <Table>
-      <TableCaption>A list of your recent email Teamplate.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="">Name</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {Teamplate.map((template) => (
-          <TableRow key={template.name}>
-            <TableCell className="font-medium relative">
-              <a
-                className="flex items-center group"
-                href={`/outreach/templates/${template._id}`}
-              >
-                <span className="hover:text-blue-600 cursor-pointer">
-                  {template.name}
-                </span>
-                <Edit3 className="ml-2 size-4 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-100" />
-              </a>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={4}>Total Teamplate: {Teamplate.length}</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
-  );
-};
 
-export default TeamplateTable;
+  return (
+    
+
+      <div className="border rounded-lg p-4">
+        {templates.length > 0 ? (
+          <Table>
+            <TableCaption>Your saved email templates.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {templates.map((template) => (
+                <TableRow key={template._id} className="hover:bg-muted/50">
+                  <TableCell>
+                    <a
+                      href={`/outreach/templates/${template._id}`}
+                      className="flex items-center group space-x-2"
+                    >
+                      <span className="hover:text-primary transition">
+                        {template.name}
+                      </span>
+                      <Edit3 className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell className="text-muted-foreground">
+                  Total Templates: {templates.length}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        ) : (
+          <p className="text-muted-foreground">No email templates found.</p>
+        )}
+      </div>
+  );
+}
