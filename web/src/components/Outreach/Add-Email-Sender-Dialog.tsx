@@ -52,7 +52,7 @@ export default function AddEmailSenderDialog() {
   });
 
   // Handle adding a new email sender
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:any) => {
     try {
       // API call
       await axios.post("/email-senders", data);

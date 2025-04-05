@@ -16,7 +16,6 @@ import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import { Loader } from "lucide-react";
-import { l } from "node_modules/@clerk/clerk-react/dist/useAuth-B4ONnC0C.d.mts";
 
 const LoginSchema = z.object({
   email: z.string().email({

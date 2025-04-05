@@ -9,7 +9,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
 import AddEmailSenderDialog from "@/components/Outreach/Add-Email-Sender-Dialog";
 
 interface EmailSender {
