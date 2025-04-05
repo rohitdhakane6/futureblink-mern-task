@@ -55,3 +55,25 @@ export const getEmailTemplateById = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching email template", error });
   }
 };
+
+export const updateEmailTemplate = async (req: Request, res: Response) => {
+  if (!req.params.id) {
+    res.status(400).json({ message: "Email template ID is required" });
+    return;
+  }
+  try {
+    const { name, subject, body } = CreateEmailTemplateSchema.parse(req.body);
+    const emailTemplate = await EmailTemplate.findOneAndUpdate(
+      { _id: req.params.id, createdBy: req.userId },
+      { name, subject, body },
+      { new: true }
+    );
+    if (!emailTemplate) {
+      res.status(404).json({ message: "Email template not found" });
+      return;
+    }
+    res.status(200).json(emailTemplate);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating email template", error });
+  }
+}
