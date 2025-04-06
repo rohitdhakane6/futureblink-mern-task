@@ -1,6 +1,7 @@
 import agenda from "../config/agenda";
 import EmailTemplate from "../models/emailTemplate.model";
 import List from "../models/list.model";
+import { DateTime } from "luxon";
 
 export const scheduleEmailSequence = async (sequence: any, userId: string) => {
   const { nodes } = sequence.flowChart;
@@ -46,7 +47,8 @@ const processEmail = async (
   const template = await EmailTemplate.findById(emailNode.data.id);
   if (!template) throw new Error("Email template not found");
 
-  const scheduleTime = new Date(Date.now() + delayInSeconds * 1000);
+  const scheduleTime = DateTime.fromISO(sendAtIST, { zone: "Asia/Kolkata" }).toUTC().toJSDate();
+
 
   for (const lead of leads) {
     await agenda.schedule(scheduleTime, "send-email", {
