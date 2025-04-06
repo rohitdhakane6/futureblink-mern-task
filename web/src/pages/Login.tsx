@@ -1,10 +1,10 @@
-import { LoginForm } from "@/components/LoginForm";
+import { AuthForm } from "@/components/AuthForm";
 
 export default function Login() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <LoginForm />
+        <AuthForm type='login' />
       </div>
     </div>
   );

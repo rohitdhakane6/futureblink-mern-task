@@ -4,6 +4,7 @@ import "./index.css";
 import "@xyflow/react/dist/style.css";
 import axios from "axios";
 import App from "./App.tsx";
+import { BrowserRouter } from "react-router-dom";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
@@ -12,6 +13,8 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );

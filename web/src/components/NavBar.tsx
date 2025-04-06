@@ -1,3 +1,4 @@
+import { LogoutDialog } from "@/components/Logout";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 export default function NavBar() {
@@ -31,9 +32,7 @@ export default function NavBar() {
         </div>
 
         <div>
-          <a href="/login" className="hover:underline">
-            Login
-          </a>
+          <LogoutDialog/>
         </div>
       </div>
     </nav>
