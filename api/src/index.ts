@@ -6,9 +6,25 @@ import { defineEmailJob } from "./jobs/sendEmail.ts";
 import agenda from "./config/agenda.ts";
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://futureblink.rohitdhakane.me",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 app.use(express.json());
-app.use(cors());
+
 defineEmailJob(agenda);
 agenda.on("ready", async () => {
   console.log("Agenda is ready");
