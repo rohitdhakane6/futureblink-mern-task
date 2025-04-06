@@ -249,8 +249,6 @@ export default function ImportList({closeDilog}:{ closeDilog:() => void}) {
         listName: listDetails.listName,
         description: listDetails.description
       });
-      console.log("Leads to be imported:", mappedData);
-      console.log("List details:", listDetails);
       setStep(3); // Move to success step
     } catch (error) {
       console.error("Submission error:", error);

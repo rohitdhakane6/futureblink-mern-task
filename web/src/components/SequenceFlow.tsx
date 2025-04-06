@@ -36,7 +36,6 @@ export default function SequenceFlow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(defaultEdges);
 
   const handleLeadSelect = (listId: string, listName: string) => {
-    console.log("Selected lead:", listId, listName);
     setNodes((nds) => [
       ...nds.map((node) =>
         node.id === "1"

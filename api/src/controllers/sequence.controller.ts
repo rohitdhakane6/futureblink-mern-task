@@ -10,7 +10,6 @@ import { scheduleEmailSequence } from "../services/emailScheduler.service";
 
 export const createSequence = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const parsedData = SequenceSchema.parse(req.body);
     const newSequence = new Sequence({
       user: req.userId,

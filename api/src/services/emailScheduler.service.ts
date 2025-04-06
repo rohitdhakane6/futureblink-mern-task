@@ -15,7 +15,6 @@ export const scheduleEmailSequence = async (sequence: any, userId: string) => {
     switch (node.type) {
       case "lead":
         leads = await processLead(node);
-        console.log(leads)
         break;
 
       case "email":
@@ -47,8 +46,11 @@ const processEmail = async (
   const template = await EmailTemplate.findById(emailNode.data.id);
   if (!template) throw new Error("Email template not found");
 
-  const scheduleTime = DateTime.fromISO(sendAtIST, { zone: "Asia/Kolkata" }).toUTC().toJSDate();
-
+  const scheduleTime = DateTime.now()
+  .setZone("Asia/Kolkata")
+  .plus({ seconds: delayInSeconds })
+  .toUTC()
+  .toJSDate();
 
   for (const lead of leads) {
     await agenda.schedule(scheduleTime, "send-email", {
