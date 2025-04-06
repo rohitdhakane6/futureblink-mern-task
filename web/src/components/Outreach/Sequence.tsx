@@ -56,6 +56,11 @@ export default function Sequence() {
   }, [id, setNodes, setEdges]);
 
   const handleSave = async ({ published }: { published: boolean }) => {
+    if (sequence?.status === "published") {
+      toast.info("This sequence is already published.");
+      return;
+    }
+  
     const toastId = toast.loading("Saving...");
     try {
       await axios.put(`/sequence/${id}`, {
@@ -66,6 +71,11 @@ export default function Sequence() {
         },
       });
       toast.success("Sequence saved successfully");
+      if (published) {
+        setSequence((prev) =>
+          prev ? { ...prev, status: "published" } : prev
+        );
+      }
     } catch (error) {
       console.error(error);
       toast.error("Failed to save sequence");
@@ -73,6 +83,7 @@ export default function Sequence() {
       toast.dismiss(toastId);
     }
   };
+  
 
   return (
     <div className="flex flex-col gap-2 container mx-auto p-4">

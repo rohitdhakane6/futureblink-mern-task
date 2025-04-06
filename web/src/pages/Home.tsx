@@ -46,7 +46,7 @@ const features = [
 const pricingTiers = [
   {
     name: "Starter",
-    price: "$29",
+    price: "Free",
     description: "Perfect for small businesses",
     features: [
       "Up to 5,000 subscribers",
@@ -156,7 +156,7 @@ function App() {
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Mail className="h-6 w-6" />
-            <span className="font-bold text-xl">FlowMail</span>
+            <span className="font-bold text-xl">Future Blink</span>
           </div>
           <div className="hidden md:flex items-center space-x-6">
             <Button variant="ghost" onClick={() => scrollToSection("features")}>
@@ -350,7 +350,7 @@ function App() {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Mail className="h-6 w-6" />
-                <span className="font-bold text-xl">FlowMail</span>
+                <span className="font-bold text-xl">Future Blink</span>
               </div>
               <p className="text-muted-foreground">
                 Building the future of email marketing automation.
@@ -385,7 +385,7 @@ function App() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
-            <p>&copy; 2025 FlowMail. All rights reserved.</p>
+            <p>&copy; 2025 Future Blink. All rights reserved.</p>
           </div>
         </div>
       </footer>
